@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Segment Interaction Demo</title>
+    <style>
+      body { font-family: sans-serif; margin: 16px; }
+      svg { border: 1px solid #ccc; background: #fafafa; touch-action: none; }
+      .handle { fill: #ffffff; stroke: #333; cursor: pointer; }
+      .segment { stroke: #1a73e8; stroke-width: 3; }
+      .center { fill: #1a73e8; cursor: move; }
+    </style>
+  </head>
+  <body>
+    <h1>Segment interaction</h1>
+    <p>Drag center (blue) to translate; drag endpoints in free or lock-distance mode.</p>
+    <label>Endpoint mode:
+      <select id="mode">
+        <option value="free">free</option>
+        <option value="lock-distance">lock-distance</option>
+      </select>
+    </label>
+    <svg id="stage" width="500" height="280" viewBox="0 0 500 280">
+      <line id="segment" class="segment" />
+      <circle id="handle-a" class="handle" r="8" />
+      <circle id="handle-b" class="handle" r="8" />
+      <circle id="center" class="center" r="6" />
+    </svg>
+    <script type="module">
+      import {
+        initialState,
+        segmentCenter,
+        startCenterDrag,
+        startEndpointDrag,
+        updateDrag,
+        endDrag,
+      } from './segmentInteraction.js';
+
+      const svg = document.getElementById('stage');
+      const modeInput = document.getElementById('mode');
+      const segmentEl = document.getElementById('segment');
+      const aEl = document.getElementById('handle-a');
+      const bEl = document.getElementById('handle-b');
+      const centerEl = document.getElementById('center');
+
+      let state = initialState({ a: { x: 120, y: 120 }, b: { x: 320, y: 150 } });
+
+      const pointer = (ev) => {
+        const rect = svg.getBoundingClientRect();
+        return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
+      };
+
+      function render() {
+        const { a, b } = state.segment;
+        const c = segmentCenter(state.segment);
+        segmentEl.setAttribute('x1', a.x);
+        segmentEl.setAttribute('y1', a.y);
+        segmentEl.setAttribute('x2', b.x);
+        segmentEl.setAttribute('y2', b.y);
+        aEl.setAttribute('cx', a.x);
+        aEl.setAttribute('cy', a.y);
+        bEl.setAttribute('cx', b.x);
+        bEl.setAttribute('cy', b.y);
+        centerEl.setAttribute('cx', c.x);
+        centerEl.setAttribute('cy', c.y);
+      }
+
+      const bindDrag = (el, onStart) => {
+        el.addEventListener('pointerdown', (ev) => {
+          ev.preventDefault();
+          state = onStart(pointer(ev));
+          el.setPointerCapture(ev.pointerId);
+        });
+      };
+
+      bindDrag(centerEl, (p) => startCenterDrag(state, p));
+      bindDrag(aEl, () => startEndpointDrag(state, 'a', modeInput.value));
+      bindDrag(bEl, () => startEndpointDrag(state, 'b', modeInput.value));
+
+      svg.addEventListener('pointermove', (ev) => {
+        if (!state.interaction) return;
+        state = updateDrag(state, pointer(ev));
+        render();
+      });
+
+      svg.addEventListener('pointerup', () => {
+        if (!state.interaction) return;
+        state = endDrag(state);
+      });
+
+      render();
+    </script>
+  </body>
+</html>
