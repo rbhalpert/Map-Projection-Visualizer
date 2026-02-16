@@ -1,0 +1,128 @@
+:root {
+  color-scheme: light dark;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #101b2b;
+  color: #f3f7ff;
+}
+
+.app-header {
+  padding: 1.25rem 1.5rem 0.25rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.app-header p {
+  margin: 0.35rem 0 0;
+  color: #d4e2ff;
+}
+
+.app-shell {
+  padding: 0.75rem 1.5rem 1.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.controls {
+  padding: 0.85rem;
+  border-radius: 10px;
+  background: #17263c;
+  border: 1px solid #2e4366;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 0.75rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 0.35rem;
+}
+
+input {
+  border: 1px solid #4e6694;
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+  background: #0e1727;
+  color: inherit;
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.projection-panel {
+  border: 1px solid #344c73;
+  background: #132035;
+  border-radius: 10px;
+  padding: 0.7rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.projection-name {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.panel-toggle {
+  border-radius: 8px;
+  border: 1px solid #4f6794;
+  background: #1f3150;
+  color: inherit;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+
+.metrics {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #cae0ff;
+}
+
+canvas {
+  width: 100%;
+  border: 1px solid #2f4468;
+  border-radius: 8px;
+  background: radial-gradient(circle at center, #1a2f4d, #0c1422 78%);
+}
+
+body.maximized .projection-panel {
+  display: none;
+}
+
+body.maximized .projection-panel.maximized {
+  display: grid;
+  grid-column: 1 / -1;
+}
+
+body.maximized .panel-grid {
+  grid-template-columns: 1fr;
+}
